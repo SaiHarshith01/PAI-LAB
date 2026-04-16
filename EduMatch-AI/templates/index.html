@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EduMatch AI | Synergy Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f0f2f5; font-family: sans-serif; }
+        .hero { background: #1e3c72; color: white; padding: 50px 0; border-radius: 0 0 40px 40px; }
+        .card { border: none; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .synergy-box { border-left: 5px solid #198754; background: white; padding: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="hero text-center">
+    <h1>🎓 EduMatch AI</h1>
+    <p>Intelligent Student Synergy & Peer Matchmaking</p>
+</div>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 text-center">
+                <h5>Select a Profile</h5>
+                <select id="studentSelect" class="form-select form-select-lg mb-3">
+    {% for name in student_list %}
+    <option value="{{ name }}">{{ name }}</option>
+    {% endfor %}
+</select>
+                <button onclick="findMatch()" class="btn btn-primary btn-lg w-100">Analyze Synergy</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultSection" class="row mt-5 justify-content-center" style="display:none;">
+        <div class="col-md-8">
+            <div class="synergy-box shadow-sm">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <small class="text-muted">YOU</small>
+                        <h3 id="userName" class="text-primary"></h3>
+                    </div>
+                    <div class="col-4">
+                        <h2 id="synergyValue" class="text-success mb-0"></h2>
+                        <small>SYNERGY</small>
+                    </div>
+                    <div class="col-4">
+                        <small class="text-muted">PARTNER</small>
+                        <h3 id="partnerName" class="text-success"></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function findMatch() {
+    const student = document.getElementById('studentSelect').value;
+    const formData = new FormData();
+    formData.append('student', student);
+
+    const response = await fetch('/match', { method: 'POST', body: formData });
+    const data = await response.json();
+
+    if(data.user) {
+        document.getElementById('resultSection').style.display = 'block';
+        document.getElementById('userName').innerText = data.user;
+        document.getElementById('partnerName').innerText = data.partner;
+        document.getElementById('synergyValue').innerText = data.synergy + "%";
+    }
+}
+</script>
+
+</body>
+</html>

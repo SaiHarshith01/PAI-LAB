@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduMatch System Architecture Flowchart</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid with a clean theme
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e1f5fe',
+                edgeColor: '#334155',
+                fontSize: '14px'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            background-color: #f8fafc;
+        }
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        h1 { color: #1e293b; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+
+    <h1>EduMatch: System Architecture</h1>
+
+    <div class="container">
+        <pre class="mermaid">
+graph TD
+    %% Global Styles
+    classDef frontend fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef backend fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef engine fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    classDef database fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px;
+
+    subgraph Client_Side [Frontend - Browser]
+        A[User Accesses URL] --> B[UI: Dropdown & Action Button]
+        B --> C{User Interaction}
+        C -->|Select Name & Click| D[JS: Package FormData]
+        D --> E[JS: fetch POST /match]
+        K[JS: Parse JSON Response] --> L[DOM Update: Display Results]
+        L --> M[CSS Animation: Reveal Card]
+    end
+
+    subgraph Server_Side [Backend - Flask]
+        F[Route: /match] --> G{Validation: Student Exists?}
+        G -->|Yes| H[Call AI Engine]
+        G -->|No| I[Return Error JSON]
+        J[Package Result JSON] --> E
+    end
+
+    subgraph AI_Engine [AI & Data Logic]
+        H --> N[Pandas: Load Student Data]
+        N --> O[Scikit-Learn: Euclidean Distance Matrix]
+        O --> P[Filter: Max Distance > 0]
+        P --> Q[Identify Complementary Partner]
+        Q --> R[Calculate Synergy %]
+        R --> J
+    end
+
+    %% Data Initialization Flow
+    A1[(Pandas DataFrame)] -.->|Populate Dropdown| B
+    
+    %% Relationships
+    E <--> F
+    J -.-> K
+
+    %% Applying Styles
+    class A,B,C,D,E,K,L,M frontend;
+    class F,G,I,J backend;
+    class H,N,O,P,Q,R engine;
+    class A1 database;
+        </pre>
+    </div>
+
+</body>
+</html>
